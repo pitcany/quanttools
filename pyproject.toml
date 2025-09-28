@@ -44,6 +44,30 @@ seaborn = "^0.13"
 plotly = "^6.0"
 altair = "^5.0"
 
+# Time series dependencies
+
+[tool.poetry.group.time_series]
+optional = true
+
+[tool.poetry.group.time_series.dependencies]
+pmdarima = "^2.0.4"
+sktime = "^0.39"
+prophet = { version = "^1.2", markers = "python_version < '3.11'" }
+darts = "^0.25"
+tsfresh = { version = "^0.19", markers = "python_version < '3.11'" }
+
+# Statistical dependencies
+
+[tool.poetry.group.statistics]
+optional = true
+
+[tool.poetry.group.statistics.dependencies]
+statsmodels = "^0.14"
+pymc = "^5.1"
+arviz = "^0.15"
+pingouin = "^0.5"
+sympy = "^1.12"
+
 # Notebook dependencies
 [tool.poetry.group.notebook]
 optional = true
