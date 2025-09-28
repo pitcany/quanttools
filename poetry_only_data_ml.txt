@@ -99,7 +99,7 @@ That combination forces Poetry to install only the data and ml groups and nothin
 
 ## 5) (Optional) A cleaner future: upgrade Poetry
 
-This pain point (both `--with` and `--only` over-including optional groups) has been addressed in later alpha/beta releases of Poetry 2.3+. If you’re able to upgrade to Poetry 2.3.0a2+ then simply doing:
+This pain point (both `--with` and `--only` over-including optional groups) has been addressed in Poetry 2.4+ (as well as in 2.3.x alpha/beta releases). If you’re able to upgrade to Poetry 2.4+ then simply doing:
 
 ```bash
 poetry install --only data,ml --no-root
@@ -120,3 +120,25 @@ will work exactly as expected, without the need for all the `--without` flags.
 ---
 
 Feel free to pick whichever fits your workflow.
+
+---
+## 6) Locking or installing only the optimization group
+
+If you need to lock or install **only** the optimization group (and your project’s core dependencies) without pulling in incompatible packages like TensorFlow, you must explicitly exclude the other optional groups:
+
+```bash
+poetry install \
+  --only optimization \
+  --without data \
+  --without ml \
+  --without viz \
+  --without notebook \
+  --without dl \
+  --without dev
+```
+
+In Poetry 2.4+ you can similarly lock only the optimization group:
+
+```bash
+poetry lock --only optimization
+```
