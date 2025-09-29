@@ -14,14 +14,41 @@ poetry install --with data,ml
 ## Quickstart
 
 ```python
-from ykp import simple_moving_average, MovingAverageCrossStrategy, Backtester, calc_max_drawdown
+from ykp import (
+    simple_moving_average,
+    bollinger_bands,
+    relative_strength_index,
+    MovingAverageCrossStrategy,
+    Backtester,
+    calc_max_drawdown,
+)
+from ykp.strategy import RSIStrategy, BollingerBandsStrategy
 
+# Sample price series
 prices = [1, 2, 3, 4, 5, 6]
-strategy = MovingAverageCrossStrategy(short_window=2, long_window=4)
-signals = strategy.generate_signals(prices)
-backtester = Backtester(strategy, initial_cash=10000)
+
+# Simple Moving Average
+sma = simple_moving_average(prices, window=3)
+
+# Bollinger Bands (lower and upper)
+lower_band, upper_band = bollinger_bands(prices, window=3, num_std=2.0)
+
+# Relative Strength Index (RSI)
+rsi_values = relative_strength_index(prices, window=3)
+
+# Strategies: Moving Average Crossover, RSI, and Bollinger Bands
+mac = MovingAverageCrossStrategy(short_window=2, long_window=4)
+rsi_strat = RSIStrategy(window=3, buy_threshold=30, sell_threshold=70)
+bb_strat = BollingerBandsStrategy(window=3, num_std=2.0)
+
+signals_mac = mac.generate_signals(prices)
+signals_rsi = rsi_strat.generate_signals(prices)
+signals_bb = bb_strat.generate_signals(prices)
+
+# Backtesting example
+backtester = Backtester(mac, initial_cash=10000)
 result = backtester.run(prices)
-print(result["equity_curve"])
+print("Equity curve:", result["equity_curve"])
 print("Max Drawdown:", calc_max_drawdown(result["equity_curve"]))
 ```
 
