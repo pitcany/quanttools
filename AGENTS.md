@@ -1,4 +1,5 @@
-You are ChatGPT, a large language model trained by OpenAI.
+# AGENTS.md
+
 Instructions
 
     The user will provide a task.
@@ -15,22 +16,6 @@ If completing the user's task requires writing or modifying files:
     Check git status to confirm your commit. You must leave your worktree in a clean state.
     Only committed code will be evaluated.
     Do not modify or amend existing commits.
-
-AGENTS.md spec
-
-    Containers often contain AGENTS.md files. These files can appear anywhere in the container's filesystem. Typical locations include /, ~, and in various places inside of Git repos.
-    These files are a way for humans to give you (the agent) instructions or tips for working within the container.
-    Some examples might be: coding conventions, info about how code is organized, or instructions for how to run or test code.
-    AGENTS.md files may provide instructions about PR messages (messages attached to a GitHub Pull Request produced by the agent, describing the PR). These instructions should be respected.
-    Instructions in AGENTS.md files:
-        The scope of an AGENTS.md file is the entire directory tree rooted at the folder that contains it.
-        For every file you touch in the final patch, you must obey instructions in any AGENTS.md file whose scope includes that file.
-        Instructions about code style, structure, naming, etc. apply only to code within the AGENTS.md file's scope, unless the file states otherwise.
-        More-deeply-nested AGENTS.md files take precedence in the case of conflicting instructions.
-        Direct system/developer/user instructions (as part of a prompt) take precedence over AGENTS.md instructions.
-    AGENTS.md files need not live only in Git repos. For example, you may find one in your home directory.
-    If the AGENTS.md includes programmatic checks to verify your work, you MUST run all of them and make a best effort to validate that the checks pass AFTER all code changes have been made.
-        This applies even for changes that appear simple, i.e. documentation. You still must run all of the programmatic checks.
 
 Citations instructions
 
@@ -140,3 +125,131 @@ namespace browser_container {
 } // namespace browser_container
 Valid channels: analysis, commentary, final. Channel must be included for every message.
 Juice: 240
+
+## Purpose
+This document defines how automated agents, assistants, and contributors should interact with this project.  
+The focus is on workflows in **R**, **Python**, and **C++**, which are the project’s primary languages.  
+The end goal is a reproducible, modular framework for **automated trading strategies**.
+
+---
+
+## General Principles
+- **Reproducibility First**: All changes must be traceable, testable, and reproducible on a clean machine.  
+- **Language-Aware Contributions**: Follow idioms of each language (tidyverse in R, PEP-8 in Python, RAII in C++).  
+- **Minimal Surprises**: Avoid clever hacks unless explicitly requested. Clarity beats compactness.  
+- **Version Pinning**: Always document version requirements for packages, libraries, or compilers.  
+- **Domain Awareness**: Trading-related code must document assumptions (market, asset class, data frequency, slippage, etc.).  
+
+---
+
+## Python Rules
+- Use **Poetry** or **Conda** for environment management.  
+- Format code with **black** + **ruff**.  
+- Provide **docstrings** for all functions/classes.  
+- Group dependencies logically (core, ML, dev, viz, optim).  
+- Write unit tests with **pytest**.  
+
+### Optimization with Gurobi
+- Use **gurobipy** for portfolio optimization, execution scheduling, and risk constraints.  
+- Clearly annotate constraints/objectives in math and code.  
+- Encapsulate models in reusable functions/classes.  
+- Always call `.dispose()` in long sessions to avoid memory leaks.  
+- Provide toy test cases under `tests/optimization/` (e.g., small mean-variance problems).  
+
+---
+
+## R Rules
+- Use **tidyverse** for wrangling, **ggplot2** for visualization.  
+- Document functions with `roxygen2`.  
+- Use **renv** for reproducibility.  
+- Supply **RMarkdown notebooks** for exploratory analysis and reporting.  
+
+### Bayesian Inference with Stan / R
+- Use **cmdstanr** for Bayesian time series and regime-switching models.  
+- Store `.stan` models under `models/`.  
+- Document priors explicitly in comments.  
+- Run posterior checks (`R-hat`, ESS, traceplots).  
+- Provide test datasets to validate models.  
+
+---
+
+## C++ Rules
+- Target **C++17 or later**.  
+- Use **CMake** for builds.  
+- RAII patterns for memory safety.  
+- Unit tests with **Catch2** or **GoogleTest**.  
+- Prefer STL over hand-rolled utilities.  
+
+### GPU Acceleration in C++
+- Use **CUDA** kernels for backtesting acceleration (e.g., Monte Carlo simulations).  
+- Provide CPU fallbacks.  
+- Benchmark under `/benchmarks/`.  
+- Document memory assumptions (FP32 vs FP64).  
+- Toggle builds with `-DENABLE_CUDA=ON`.  
+
+---
+
+## Cross-Language Integration
+- R ↔ Python: use **reticulate** for data pipelines.  
+- Python ↔ C++: use **pybind11** for performance-critical code (e.g., fast order book simulation).  
+- Document data types and ownership rules at boundaries.  
+
+---
+
+## Project Structure (Boilerplate)
+ykp/
+├── data/ # Raw + processed datasets (never commit large raw data)
+│ ├── raw/
+│ └── processed/
+├── models/ # ML, Bayesian, and optimization models
+│ ├── bayes/ # Stan models (.stan)
+│ ├── dl/ # Deep learning (PyTorch/TensorFlow)
+│ ├── trees/ # XGBoost, LightGBM, CatBoost
+│ └── optim/ # Gurobi, CVXPY, scheduling
+├── src/ # Core source code
+│ ├── python/ # Python modules
+│ ├── r/ # R scripts
+│ └── cpp/ # C++ code (with optional CUDA kernels)
+├── notebooks/ # Jupyter/RMarkdown for research & reporting
+├── benchmarks/ # Performance benchmarks (C++, GPU, backtesting)
+├── tests/ # Unit + integration tests
+│ ├── test_data/ # Small fixtures
+│ ├── optimization/
+│ └── bayes/
+├── config/ # Config files (YAML/JSON for strategies/envs)
+├── results/ # Saved model artifacts, logs, reports
+├── scripts/ # Utility scripts (data download, cron jobs, etc.)
+├── README.md
+├── AGENTS.md
+├── pyproject.toml # Poetry config
+├── renv.lock # R reproducibility
+└── CMakeLists.txt # C++ builds
+
+
+---
+
+## Dependency Groups (Poetry)
+
+- **core**: always installed → numpy, pandas, scipy, scikit-learn, matplotlib, seaborn, jupyterlab, notebook, ipykernel.  
+- **dl**: deep learning frameworks → torch/vision/audio, flax, optax, tensorflow, jax.  
+- **trees**: gradient boosting frameworks → xgboost, lightgbm, catboost.  
+- **bayes**: Bayesian inference → pymc, numpyro, cmdstanpy, arviz.  
+- **nlp**: NLP stack → transformers, datasets, tokenizers, spacy, sentencepiece.  
+- **cv**: computer vision → timm, opencv-python, (optionally detectron2/mmcv/mmdet).  
+- **time**: time-series modeling → statsmodels, darts, prophet.  
+- **optim**: optimization/experimentation → optuna, ray, mlflow, onnxruntime.  
+- **dev**: developer tools → pytest, black, ruff.  
+
+When running Poetry commands:
+- `poetry install --with bayes` → installs only `core + bayes`.  
+- `poetry install --without cv` → skips `cv` dependencies.  
+
+---
+
+## Agent Workflow Examples
+
+- **Optimization (Python)**: Use `gurobipy` to maximize portfolio Sharpe ratio subject to risk/turnover constraints.  
+- **Bayesian Calibration (R/Stan)**: Fit state-space volatility models and validate with posterior predictive checks.  
+- **GPU Acceleration (C++)**: Implement Monte Carlo simulations with CUDA kernels, benchmark against CPU fallback.  
+
+---
