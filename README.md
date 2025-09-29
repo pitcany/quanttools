@@ -1,4 +1,33 @@
-# Removing installed packages
+# ykp
+
+ykp is an algorithmic trading assistant package providing tools for data loading, indicator calculation,
+strategy development, backtesting, execution handling, and performance metrics.
+
+## Installation
+
+Install required dependencies (including core data and ML groups):
+
+```bash
+poetry install --with data,ml
+```
+
+## Quickstart
+
+```python
+from ykp import simple_moving_average, MovingAverageCrossStrategy, Backtester, calc_max_drawdown
+
+prices = [1, 2, 3, 4, 5, 6]
+strategy = MovingAverageCrossStrategy(short_window=2, long_window=4)
+signals = strategy.generate_signals(prices)
+backtester = Backtester(strategy, initial_cash=10000)
+result = backtester.run(prices)
+print(result["equity_curve"])
+print("Max Drawdown:", calc_max_drawdown(result["equity_curve"]))
+```
+
+---
+
+## Dependency Management
 
 To remove a dependency from your project (and uninstall it from your venv), use:
 
