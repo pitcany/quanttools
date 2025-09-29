@@ -107,3 +107,119 @@ class BollingerBandsStrategy(Strategy):
             else:
                 signals.append(0)
         return signals
+
+
+class ExponentialMovingAverageCrossStrategy(Strategy):
+    """
+    Exponential moving average crossover strategy.
+    Buys when short-term EMA crosses above long-term EMA and sells on reverse.
+    """
+    def __init__(self, short_window: int, long_window: int):
+        if short_window >= long_window:
+            raise ValueError("short_window must be less than long_window")
+        self.short_window = short_window
+        self.long_window = long_window
+
+    def generate_signals(self, prices: List[float]) -> List[int]:
+        from .indicators import exponential_moving_average
+
+        short_ema = exponential_moving_average(prices, self.short_window)
+        long_ema = exponential_moving_average(prices, self.long_window)
+        signals: List[int] = []
+        for s, l in zip(short_ema, long_ema):
+            if s is None or l is None:
+                signals.append(0)
+            elif s > l:
+                signals.append(1)
+            elif s < l:
+                signals.append(-1)
+            else:
+                signals.append(0)
+        return signals
+
+
+class MACDStrategy(Strategy):
+    """
+    Moving Average Convergence Divergence (MACD) strategy.
+    Buys when MACD line crosses above signal line and sells on reverse.
+    """
+    def __init__(self, fast_window: int = 12, slow_window: int = 26, signal_window: int = 9):
+        if fast_window < 1 or slow_window < 1 or signal_window < 1:
+            raise ValueError("Window sizes must be positive")
+        if fast_window >= slow_window:
+            raise ValueError("fast_window must be less than slow_window")
+        self.fast_window = fast_window
+        self.slow_window = slow_window
+        self.signal_window = signal_window
+
+    def generate_signals(self, prices: List[float]) -> List[int]:
+        from .indicators import macd
+
+        macd_line, signal_line = macd(prices, self.fast_window, self.slow_window, self.signal_window)
+        signals: List[int] = []
+        for m, s in zip(macd_line, signal_line):
+            if m is None or s is None:
+                signals.append(0)
+            elif m > s:
+                signals.append(1)
+            elif m < s:
+                signals.append(-1)
+            else:
+                signals.append(0)
+        return signals
+
+
+class MomentumStrategy(Strategy):
+    """
+    Momentum strategy.
+    Buys when momentum exceeds positive threshold and sells when below negative threshold.
+    """
+    def __init__(self, window: int, threshold: float = 0.0):
+        if window < 1:
+            raise ValueError("Window size must be positive")
+        self.window = window
+        self.threshold = threshold
+
+    def generate_signals(self, prices: List[float]) -> List[int]:
+        from .indicators import momentum
+
+        mom_vals = momentum(prices, self.window)
+        signals: List[int] = []
+        for m in mom_vals:
+            if m is None:
+                signals.append(0)
+            elif m > self.threshold:
+                signals.append(1)
+            elif m < -self.threshold:
+                signals.append(-1)
+            else:
+                signals.append(0)
+        return signals
+
+
+class ROCStrategy(Strategy):
+    """
+    Rate of Change (ROC) strategy.
+    Buys when ROC exceeds positive threshold and sells when below negative threshold.
+    """
+    def __init__(self, window: int, threshold: float = 0.0):
+        if window < 1:
+            raise ValueError("Window size must be positive")
+        self.window = window
+        self.threshold = threshold
+
+    def generate_signals(self, prices: List[float]) -> List[int]:
+        from .indicators import rate_of_change
+
+        roc_vals = rate_of_change(prices, self.window)
+        signals: List[int] = []
+        for r in roc_vals:
+            if r is None:
+                signals.append(0)
+            elif r > self.threshold:
+                signals.append(1)
+            elif r < -self.threshold:
+                signals.append(-1)
+            else:
+                signals.append(0)
+        return signals

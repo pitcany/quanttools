@@ -18,11 +18,22 @@ from ykp import (
     simple_moving_average,
     bollinger_bands,
     relative_strength_index,
+    exponential_moving_average,
+    momentum,
+    rate_of_change,
+    macd,
     MovingAverageCrossStrategy,
     Backtester,
     calc_max_drawdown,
 )
-from ykp.strategy import RSIStrategy, BollingerBandsStrategy
+from ykp.strategy import (
+    RSIStrategy,
+    BollingerBandsStrategy,
+    ExponentialMovingAverageCrossStrategy,
+    MACDStrategy,
+    MomentumStrategy,
+    ROCStrategy,
+)
 
 # Sample price series
 prices = [1, 2, 3, 4, 5, 6]
@@ -40,10 +51,18 @@ rsi_values = relative_strength_index(prices, window=3)
 mac = MovingAverageCrossStrategy(short_window=2, long_window=4)
 rsi_strat = RSIStrategy(window=3, buy_threshold=30, sell_threshold=70)
 bb_strat = BollingerBandsStrategy(window=3, num_std=2.0)
+ema_strat = ExponentialMovingAverageCrossStrategy(short_window=2, long_window=4)
+macd_strat = MACDStrategy(fast_window=12, slow_window=26, signal_window=9)
+mom_strat = MomentumStrategy(window=3, threshold=0.0)
+roc_strat = ROCStrategy(window=3, threshold=0.0)
 
 signals_mac = mac.generate_signals(prices)
 signals_rsi = rsi_strat.generate_signals(prices)
 signals_bb = bb_strat.generate_signals(prices)
+signals_ema = ema_strat.generate_signals(prices)
+signals_macd = macd_strat.generate_signals(prices)
+signals_mom = mom_strat.generate_signals(prices)
+signals_roc = roc_strat.generate_signals(prices)
 
 # Backtesting example
 backtester = Backtester(mac, initial_cash=10000)

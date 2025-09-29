@@ -1,6 +1,14 @@
 import pytest
 
-from ykp.strategy import MovingAverageCrossStrategy, RSIStrategy, BollingerBandsStrategy
+from ykp.strategy import (
+    MovingAverageCrossStrategy,
+    RSIStrategy,
+    BollingerBandsStrategy,
+    ExponentialMovingAverageCrossStrategy,
+    MACDStrategy,
+    MomentumStrategy,
+    ROCStrategy,
+)
 
 
 def test_mac_strategy_valid():
@@ -43,3 +51,49 @@ def test_bollinger_bands_strategy_invalid_params():
         BollingerBandsStrategy(0, 1)
     with pytest.raises(ValueError):
         BollingerBandsStrategy(3, -1)
+
+def test_ema_cross_strategy_basic():
+    strat = ExponentialMovingAverageCrossStrategy(2, 4)
+    prices = [1, 2, 3, 4, 5, 6]
+    signals = strat.generate_signals(prices)
+    assert isinstance(signals, list)
+    assert len(signals) == len(prices)
+
+def test_ema_cross_strategy_invalid():
+    with pytest.raises(ValueError):
+        ExponentialMovingAverageCrossStrategy(5, 3)
+
+def test_macd_strategy_basic():
+    strat = MACDStrategy(fast_window=2, slow_window=4, signal_window=2)
+    prices = [1, 2, 3, 4, 5, 6, 7]
+    signals = strat.generate_signals(prices)
+    assert isinstance(signals, list)
+    assert len(signals) == len(prices)
+
+def test_macd_strategy_invalid_params():
+    with pytest.raises(ValueError):
+        MACDStrategy(5, 3, 2)
+    with pytest.raises(ValueError):
+        MACDStrategy(2, 4, 0)
+
+def test_momentum_strategy_basic():
+    strat = MomentumStrategy(window=1, threshold=0)
+    prices = [1, 2, 3, 2, 1]
+    # momentum: [None,1,1,-1,-1]
+    signals = strat.generate_signals(prices)
+    assert signals == [0, 1, 1, -1, -1]
+
+def test_momentum_strategy_invalid():
+    with pytest.raises(ValueError):
+        MomentumStrategy(0, 1)
+
+def test_roc_strategy_basic():
+    strat = ROCStrategy(window=1, threshold=0)
+    prices = [1, 2, 4, 2, 1]
+    # roc: [None,100,100,-50,-50]
+    signals = strat.generate_signals(prices)
+    assert signals == [0, 1, 1, -1, -1]
+
+def test_roc_strategy_invalid():
+    with pytest.raises(ValueError):
+        ROCStrategy(0, 1)
