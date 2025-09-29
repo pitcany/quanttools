@@ -10,6 +10,7 @@ packages = [{include = "ykp", from = "src"}]
 python = ">=3.11,<3.14"
 
 # Core data science dependencies
+
 [tool.poetry.group.data]
 optional = true
 
@@ -17,6 +18,22 @@ optional = true
 numpy = "^1.25"
 pandas = "^2.1"
 scipy = "^1.11"
+
+# OpenAI
+
+[tool.poetry.group.julia]
+optional = true
+
+[tool.poetry.group.julia.dependencies]
+julia = "^0.6.2"
+
+# OpenAI
+
+[tool.poetry.group.openai]
+optional = true
+
+[tool.poetry.group.openai.dependencies]
+openai = "^1.109.1"
 
 # Optimization dependencies
 [tool.poetry.group.optimization]
@@ -95,6 +112,13 @@ torch = "^2.8"
 torchvision = "^0.23"
 torchaudio = "^2.8"
 tensorflow = "^2.13"
+
+# [tool.poetry.group.autogluon]
+# optional = true
+
+# [tool.poetry.group.autogluon.dependencies]
+# # Minimal Autogluon core package to avoid pulling in all extras
+# autogluon-core = "^1.4.0"
 
 # Development dependencies
 [tool.poetry.group.dev.dependencies]

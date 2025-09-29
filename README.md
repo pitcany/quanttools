@@ -28,3 +28,28 @@ If you are on Poetry 2.2.x and cannot yet upgrade, consider using the `poetry_on
 ```bash
 pipx upgrade poetry
 ```
+
+# Optional Autogluon support
+
+This project provides an optional `autogluon` dependency group to avoid dependency conflicts.
+You can enable this group when locking or installing dependencies:
+
+```bash
+poetry lock --with autogluon
+poetry install --with autogluon
+```
+
+For Poetry 2.4+ you can also restrict to only the `autogluon` group:
+
+```bash
+poetry lock --only autogluon
+poetry install --only autogluon
+```
+
+To add Autogluon to your project, run:
+
+```bash
+poetry add autogluon-core --group autogluon
+# or for full tabular support:
+poetry add 'autogluon.tabular[all]' --group autogluon
+```
