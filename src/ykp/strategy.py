@@ -223,3 +223,30 @@ class ROCStrategy(Strategy):
             else:
                 signals.append(0)
         return signals
+
+
+class OptionBuyAndHoldStrategy(Strategy):
+    """
+    Simple strategy to buy an option at the first opportunity and hold until expiration.
+    """
+    def generate_signals(self, prices: List[float]) -> List[int]:
+        # Buy signal at time 0, hold (0) thereafter
+        if not prices:
+            return []
+        return [1] + [0] * (len(prices) - 1)
+
+
+class OptionStraddleStrategy(Strategy):
+    """
+    Strategy to buy a straddle when implied volatility exceeds a given threshold.
+    """
+    def __init__(self, threshold: float):
+        if threshold < 0:
+            raise ValueError("threshold must be non-negative")
+        self.threshold = threshold
+
+    def generate_signals(self, implied_vol: List[float]) -> List[int]:
+        signals: List[int] = []
+        for iv in implied_vol:
+            signals.append(1 if iv > self.threshold else 0)
+        return signals

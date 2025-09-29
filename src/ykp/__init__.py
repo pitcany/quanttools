@@ -24,6 +24,8 @@ from .strategy import (
     MACDStrategy,
     MomentumStrategy,
     ROCStrategy,
+    OptionBuyAndHoldStrategy,
+    OptionStraddleStrategy,
 )
 from .backtest import Backtester
 from .execution import ExecutionHandler
@@ -46,6 +48,8 @@ __all__ = [
     "MACDStrategy",
     "MomentumStrategy",
     "ROCStrategy",
+    "OptionBuyAndHoldStrategy",
+    "OptionStraddleStrategy",
     "Backtester",
     "ExecutionHandler",
     "calc_max_drawdown",

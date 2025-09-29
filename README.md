@@ -69,6 +69,35 @@ backtester = Backtester(mac, initial_cash=10000)
 result = backtester.run(prices)
 print("Equity curve:", result["equity_curve"])
 print("Max Drawdown:", calc_max_drawdown(result["equity_curve"]))
+```python
+from ykp.options import (
+    black_scholes_call_price,
+    black_scholes_put_price,
+    black_scholes_call_delta,
+    black_scholes_put_delta,
+    black_scholes_gamma,
+    black_scholes_vega,
+    black_scholes_call_theta,
+    black_scholes_put_theta,
+    black_scholes_call_rho,
+    black_scholes_put_rho,
+)
+from ykp.strategy import OptionBuyAndHoldStrategy, OptionStraddleStrategy
+
+# Options pricing and Greeks example
+S, K, T, r, sigma = 100.0, 100.0, 1.0, 0.05, 0.2
+call_price = black_scholes_call_price(S, K, T, r, sigma)
+put_price = black_scholes_put_price(S, K, T, r, sigma)
+call_delta = black_scholes_call_delta(S, K, T, r, sigma)
+gamma = black_scholes_gamma(S, K, T, r, sigma)
+
+# Option strategies: buy and hold, straddle on high IV
+iv_series = [0.15, 0.18, 0.25, 0.22, 0.15]
+obh_strategy = OptionBuyAndHoldStrategy()
+straddle_strategy = OptionStraddleStrategy(threshold=0.2)
+signals_obh = obh_strategy.generate_signals(iv_series)
+signals_straddle = straddle_strategy.generate_signals(iv_series)
+```
 ```
 
 ---
