@@ -173,12 +173,11 @@ def macd(data: List[float], fast_window: int = 12, slow_window: int = 26, signal
         else:
             macd_vals.append(m)
             if len(macd_vals) < signal_window:
-                # insufficient for initial signal SMA
-                if len(macd_vals) == signal_window:
-                    init_sma = sum(macd_vals) / signal_window
-                    signal_line.append(init_sma)
-                else:
-                    signal_line.append(None)
+                # insufficient values for initial signal SMA
+                signal_line.append(None)
+            elif len(macd_vals) == signal_window:
+                init_sma = sum(macd_vals) / signal_window
+                signal_line.append(init_sma)
             else:
                 prev = signal_line[-1]
                 assert prev is not None

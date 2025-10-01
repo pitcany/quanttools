@@ -69,6 +69,8 @@ backtester = Backtester(mac, initial_cash=10000)
 result = backtester.run(prices)
 print("Equity curve:", result["equity_curve"])
 print("Max Drawdown:", calc_max_drawdown(result["equity_curve"]))
+```
+
 ```python
 from ykp.options import (
     black_scholes_call_price,

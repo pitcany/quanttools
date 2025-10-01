@@ -5,6 +5,8 @@ description = ""
 authors = ["pitcany <pitcany@gmail.com>"]
 readme = "README.md"
 packages = [{include = "ykp", from = "src"}]
+license = "MIT"
+classifiers = ["License :: OSI Approved :: MIT License"]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.14"

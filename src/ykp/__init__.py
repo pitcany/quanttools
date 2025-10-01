@@ -5,6 +5,14 @@ Provides tools for data loading, technical indicators, strategy templates,
 backtesting engine, execution handling, and performance metrics.
 """
 
+import importlib.metadata
+
+try:
+    __version__ = importlib.metadata.version(__name__)
+except importlib.metadata.PackageNotFoundError:
+    # package is not installed, use a default version
+    __version__ = "0.0.0"
+
 from .data import DataLoader
 from .indicators import (
     simple_moving_average,
