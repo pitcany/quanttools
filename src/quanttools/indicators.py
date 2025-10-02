@@ -2,10 +2,20 @@
 Module for calculating technical indicators.
 """
 
-from typing import List, Optional, Tuple
+from typing import Sequence, Optional, Tuple, Union
 import statistics
+try:
+    import numpy as np
+    import pandas as pd
+    _PANDAS_AVAILABLE = True
+except ImportError:
+    pd = None  # type: ignore
+    np = None  # type: ignore
+    _PANDAS_AVAILABLE = False
 
-def simple_moving_average(data: List[float], window: int) -> List[Optional[float]]:
+def simple_moving_average(
+    data: Union[Sequence[float], "pd.Series"], window: int
+) -> Union[Sequence[Optional[float]], "pd.Series"]:
     """
     Compute the simple moving average (SMA) over a data series.
 
@@ -15,7 +25,13 @@ def simple_moving_average(data: List[float], window: int) -> List[Optional[float
     """
     if window < 1:
         raise ValueError("Window size must be positive")
-    sma: List[Optional[float]] = []
+    # pandas/NumPy vectorized path
+    if _PANDAS_AVAILABLE and isinstance(data, (pd.Series, np.ndarray)):
+        series = pd.Series(data)
+        result = series.rolling(window=window, min_periods=window).mean()
+        return result if isinstance(data, pd.Series) else result.tolist()
+    # fallback to Python
+    sma: list[Optional[float]] = []
     for i in range(len(data)):
         if i + 1 < window:
             sma.append(None)
@@ -24,7 +40,9 @@ def simple_moving_average(data: List[float], window: int) -> List[Optional[float
             sma.append(window_sum / window)
     return sma
 
-def bollinger_bands(data: List[float], window: int, num_std: float) -> Tuple[List[Optional[float]], List[Optional[float]]]:
+def bollinger_bands(
+    data: Union[Sequence[float], "pd.Series"], window: int, num_std: float
+) -> Tuple[Union[Sequence[Optional[float]], "pd.Series"], Union[Sequence[Optional[float]], "pd.Series"]]:
     """
     Compute Bollinger Bands (lower and upper) over a data series.
 
@@ -37,8 +55,18 @@ def bollinger_bands(data: List[float], window: int, num_std: float) -> Tuple[Lis
         raise ValueError("Window size must be positive")
     if num_std < 0:
         raise ValueError("num_std must be non-negative")
-    lower: List[Optional[float]] = []
-    upper: List[Optional[float]] = []
+    if _PANDAS_AVAILABLE and isinstance(data, (pd.Series, np.ndarray)):
+        series = pd.Series(data)
+        roll = series.rolling(window=window, min_periods=window)
+        mean = roll.mean()
+        std = roll.std(ddof=0)
+        lower = mean - num_std * std
+        upper = mean + num_std * std
+        if isinstance(data, pd.Series):
+            return lower, upper
+        return lower.tolist(), upper.tolist()
+    lower: list[Optional[float]] = []
+    upper: list[Optional[float]] = []
     for i in range(len(data)):
         if i + 1 < window:
             lower.append(None)
@@ -51,7 +79,9 @@ def bollinger_bands(data: List[float], window: int, num_std: float) -> Tuple[Lis
             upper.append(mean + num_std * std)
     return lower, upper
 
-def relative_strength_index(data: List[float], window: int) -> List[Optional[float]]:
+def relative_strength_index(
+    data: Union[Sequence[float], "pd.Series"], window: int
+) -> Union[Sequence[Optional[float]], "pd.Series"]:
     """
     Compute the Relative Strength Index (RSI) for a data series.
 
@@ -61,7 +91,17 @@ def relative_strength_index(data: List[float], window: int) -> List[Optional[flo
     """
     if window < 1:
         raise ValueError("Window size must be positive")
-    rsi_values: List[Optional[float]] = []
+    if _PANDAS_AVAILABLE and isinstance(data, (pd.Series, np.ndarray)):
+        series = pd.Series(data)
+        delta = series.diff()
+        gain = delta.clip(lower=0)
+        loss = -delta.clip(upper=0)
+        avg_gain = gain.rolling(window=window, min_periods=window).mean()
+        avg_loss = loss.rolling(window=window, min_periods=window).mean()
+        rs = avg_gain / avg_loss
+        rsi = 100 - 100 / (1 + rs)
+        return rsi if isinstance(data, pd.Series) else rsi.tolist()
+    rsi_values: list[Optional[float]] = []
     for i in range(len(data)):
         if i < window:
             rsi_values.append(None)
@@ -78,7 +118,9 @@ def relative_strength_index(data: List[float], window: int) -> List[Optional[flo
             rsi_values.append(rsi_val)
     return rsi_values
 
-def exponential_moving_average(data: List[float], window: int) -> List[Optional[float]]:
+def exponential_moving_average(
+    data: Union[Sequence[float], "pd.Series"], window: int
+) -> Union[Sequence[Optional[float]], "pd.Series"]:
     """
     Compute the exponential moving average (EMA) over a data series.
 
@@ -88,7 +130,11 @@ def exponential_moving_average(data: List[float], window: int) -> List[Optional[
     """
     if window < 1:
         raise ValueError("Window size must be positive")
-    ema: List[Optional[float]] = []
+    if _PANDAS_AVAILABLE and isinstance(data, (pd.Series, np.ndarray)):
+        series = pd.Series(data)
+        ema = series.ewm(span=window, adjust=False, min_periods=window).mean()
+        return ema if isinstance(data, pd.Series) else ema.tolist()
+    ema: list[Optional[float]] = []
     multiplier = 2 / (window + 1)
     ema_prev: Optional[float] = None
     for i, price in enumerate(data):
@@ -105,7 +151,9 @@ def exponential_moving_average(data: List[float], window: int) -> List[Optional[
             ema_prev = ema_val
     return ema
 
-def momentum(data: List[float], window: int) -> List[Optional[float]]:
+def momentum(
+    data: Union[Sequence[float], "pd.Series"], window: int
+) -> Union[Sequence[Optional[float]], "pd.Series"]:
     """
     Compute the momentum indicator (difference) over a data series.
 
@@ -115,7 +163,11 @@ def momentum(data: List[float], window: int) -> List[Optional[float]]:
     """
     if window < 1:
         raise ValueError("Window size must be positive")
-    mom: List[Optional[float]] = []
+    if _PANDAS_AVAILABLE and isinstance(data, (pd.Series, np.ndarray)):
+        series = pd.Series(data)
+        mom = series.diff(periods=window)
+        return mom if isinstance(data, pd.Series) else mom.tolist()
+    mom: list[Optional[float]] = []
     for i in range(len(data)):
         if i < window:
             mom.append(None)
@@ -123,7 +175,9 @@ def momentum(data: List[float], window: int) -> List[Optional[float]]:
             mom.append(data[i] - data[i - window])
     return mom
 
-def rate_of_change(data: List[float], window: int) -> List[Optional[float]]:
+def rate_of_change(
+    data: Union[Sequence[float], "pd.Series"], window: int
+) -> Union[Sequence[Optional[float]], "pd.Series"]:
     """
     Compute the rate of change (ROC) percentage over a data series.
 
@@ -133,7 +187,13 @@ def rate_of_change(data: List[float], window: int) -> List[Optional[float]]:
     """
     if window < 1:
         raise ValueError("Window size must be positive")
-    roc: List[Optional[float]] = []
+    if _PANDAS_AVAILABLE and isinstance(data, (pd.Series, np.ndarray)):
+        series = pd.Series(data)
+        roc = series.pct_change(periods=window) * 100
+        # avoid division-by-zero entries
+        roc = roc.where(series.shift(window) != 0)
+        return roc if isinstance(data, pd.Series) else roc.tolist()
+    roc: list[Optional[float]] = []
     for i in range(len(data)):
         if i < window or data[i - window] == 0:
             roc.append(None)
@@ -141,7 +201,12 @@ def rate_of_change(data: List[float], window: int) -> List[Optional[float]]:
             roc.append((data[i] - data[i - window]) / data[i - window] * 100)
     return roc
 
-def macd(data: List[float], fast_window: int = 12, slow_window: int = 26, signal_window: int = 9) -> Tuple[List[Optional[float]], List[Optional[float]]]:
+def macd(
+    data: Union[Sequence[float], "pd.Series"],
+    fast_window: int = 12,
+    slow_window: int = 26,
+    signal_window: int = 9,
+) -> Tuple[Union[Sequence[Optional[float]], "pd.Series"], Union[Sequence[Optional[float]], "pd.Series"]]:
     """
     Compute MACD line and signal line for a data series.
 
@@ -155,25 +220,33 @@ def macd(data: List[float], fast_window: int = 12, slow_window: int = 26, signal
         raise ValueError("Window sizes must be positive")
     if fast_window >= slow_window:
         raise ValueError("fast_window must be less than slow_window")
+    if _PANDAS_AVAILABLE and isinstance(data, (pd.Series, np.ndarray)):
+        series = pd.Series(data)
+        ema_fast = series.ewm(span=fast_window, adjust=False, min_periods=fast_window).mean()
+        ema_slow = series.ewm(span=slow_window, adjust=False, min_periods=slow_window).mean()
+        macd_line = ema_fast - ema_slow
+        signal_line = macd_line.ewm(span=signal_window, adjust=False, min_periods=signal_window).mean()
+        if isinstance(data, pd.Series):
+            return macd_line, signal_line
+        return macd_line.tolist(), signal_line.tolist()
+    # fallback to Python implementation
     ema_fast = exponential_moving_average(data, fast_window)
     ema_slow = exponential_moving_average(data, slow_window)
-    macd_line: List[Optional[float]] = []
+    macd_line: list[Optional[float]] = []
     for f, s in zip(ema_fast, ema_slow):
         if f is None or s is None:
             macd_line.append(None)
         else:
             macd_line.append(f - s)
     # signal line is EMA of macd_line ignoring None
-    # fill initial Nones for signal
-    signal_line: List[Optional[float]] = []
-    macd_vals: List[float] = []
+    signal_line: list[Optional[float]] = []
+    macd_vals: list[float] = []
     for m in macd_line:
         if m is None:
             signal_line.append(None)
         else:
             macd_vals.append(m)
             if len(macd_vals) < signal_window:
-                # insufficient values for initial signal SMA
                 signal_line.append(None)
             elif len(macd_vals) == signal_window:
                 init_sma = sum(macd_vals) / signal_window
