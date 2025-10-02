@@ -1,6 +1,6 @@
 import pytest
 
-from ykp.data import DataLoader
+from quanttools.data import DataLoader
 
 
 def test_data_loader_abstract():

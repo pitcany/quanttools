@@ -1,7 +1,7 @@
 import math
 import pytest
 
-from ykp.options import (
+from quanttools.options import (
     black_scholes_call_price,
     black_scholes_put_price,
     black_scholes_call_delta,

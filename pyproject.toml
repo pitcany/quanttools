@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "ykp"
+name = "quanttools"
 version = "0.1.0"
 description = ""
 authors = ["pitcany <pitcany@gmail.com>"]
 readme = "README.md"
-packages = [{include = "ykp", from = "src"}]
+packages = [{include = "quanttools", from = "src"}]
 license = "MIT"
 classifiers = ["License :: OSI Approved :: MIT License"]
 

@@ -1,4 +1,4 @@
-from ykp.utils import calc_max_drawdown
+from quanttools.utils import calc_max_drawdown
 
 
 def test_max_drawdown():

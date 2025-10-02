@@ -1,6 +1,6 @@
 import pytest
 
-from ykp.indicators import (
+from quanttools.indicators import (
     simple_moving_average,
     bollinger_bands,
     relative_strength_index,

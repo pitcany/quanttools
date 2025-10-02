@@ -1,5 +1,5 @@
 """
-ykp: Algorithmic Trading Assistant Package
+quanttools: Algorithmic Trading Assistant Package
 
 Provides tools for data loading, technical indicators, strategy templates,
 backtesting engine, execution handling, and performance metrics.

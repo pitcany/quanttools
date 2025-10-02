@@ -1,6 +1,6 @@
 import pytest
 
-from ykp.execution import ExecutionHandler
+from quanttools.execution import ExecutionHandler
 
 
 def test_execution_handler_abstract():

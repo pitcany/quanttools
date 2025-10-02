@@ -1,6 +1,6 @@
 import pytest
 
-from ykp.strategy import (
+from quanttools.strategy import (
     MovingAverageCrossStrategy,
     RSIStrategy,
     BollingerBandsStrategy,

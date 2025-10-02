@@ -1,8 +1,8 @@
-# ykp
+# quanttools
 
-[![CI Tests](https://github.com/pitcany/ykp/actions/workflows/python-ci.yml/badge.svg)](https://github.com/pitcany/ykp/actions/workflows/python-ci.yml)
+[![CI Tests](https://github.com/pitcany/quanttools/actions/workflows/python-ci.yml/badge.svg)](https://github.com/pitcany/quanttools/actions/workflows/python-ci.yml)
 
-ykp is an algorithmic trading assistant package providing tools for data loading, indicator calculation,
+quanttools is an algorithmic trading assistant package providing tools for data loading, indicator calculation,
 strategy development, backtesting, execution handling, and performance metrics.
 
 ## Installation
@@ -16,7 +16,7 @@ poetry install --with data,ml
 ## Quickstart
 
 ```python
-from ykp import (
+from quanttools import (
     simple_moving_average,
     bollinger_bands,
     relative_strength_index,
@@ -28,7 +28,7 @@ from ykp import (
     Backtester,
     calc_max_drawdown,
 )
-from ykp.strategy import (
+from quanttools.strategy import (
     RSIStrategy,
     BollingerBandsStrategy,
     ExponentialMovingAverageCrossStrategy,
@@ -74,7 +74,7 @@ print("Max Drawdown:", calc_max_drawdown(result["equity_curve"]))
 ```
 
 ```python
-from ykp.options import (
+from quanttools.options import (
     black_scholes_call_price,
     black_scholes_put_price,
     black_scholes_call_delta,
@@ -86,7 +86,7 @@ from ykp.options import (
     black_scholes_call_rho,
     black_scholes_put_rho,
 )
-from ykp.strategy import OptionBuyAndHoldStrategy, OptionStraddleStrategy
+from quanttools.strategy import OptionBuyAndHoldStrategy, OptionStraddleStrategy
 
 # Options pricing and Greeks example
 S, K, T, r, sigma = 100.0, 100.0, 1.0, 0.05, 0.2

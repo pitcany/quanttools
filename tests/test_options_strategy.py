@@ -1,6 +1,6 @@
 import pytest
 
-from ykp.strategy import OptionBuyAndHoldStrategy, OptionStraddleStrategy
+from quanttools.strategy import OptionBuyAndHoldStrategy, OptionStraddleStrategy
 
 
 def test_option_buy_and_hold_basic():

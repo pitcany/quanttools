@@ -197,7 +197,7 @@ The end goal is a reproducible, modular framework for **automated trading strate
 ---
 
 ## Project Structure (Boilerplate)
-ykp/
+quanttools/
 ├── data/ # Raw + processed datasets (never commit large raw data)
 │ ├── raw/
 │ └── processed/

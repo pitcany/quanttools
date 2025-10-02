@@ -1,5 +1,5 @@
-from ykp.strategy import MovingAverageCrossStrategy
-from ykp.backtest import Backtester
+from quanttools.strategy import MovingAverageCrossStrategy
+from quanttools.backtest import Backtester
 
 
 def test_backtest_run():
