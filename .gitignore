@@ -1,0 +1,15 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+
+# Ignore R artifacts
+.Rhistory
+.RData
+.Rproj.user/
+
+# Ignore renv library folder
+renv/library/
+
+# Ignore CmdStan build artifacts
+models/bayes/*.hpp
+models/bayes/*.exe

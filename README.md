@@ -159,3 +159,22 @@ poetry add autogluon-core --group autogluon
 # or for full tabular support:
 poetry add 'autogluon.tabular[all]' --group autogluon
 ```
+
+# R / Stan Integration
+
+This project includes a simple Bayesian time-series example using **cmdstanr** and Stan.
+Stan model files are stored under `models/bayes/`. You can fit a toy AR(1) model in R as follows:
+
+```r
+# Install cmdstanr and CmdStan if needed:
+# install.packages('cmdstanr')
+# cmdstanr::install_cmdstan()
+
+library(cmdstanr)
+source('src/r/bayes_ar1.R')
+data <- rnorm(100)
+fit <- fit_ar1_model(data)
+print(fit$summary())
+```
+
+Use `renv::restore()` to install R dependencies from `renv.lock`.
