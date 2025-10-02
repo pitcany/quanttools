@@ -1,5 +1,7 @@
 # ykp
 
+[![CI Tests](https://github.com/pitcany/ykp/actions/workflows/python-ci.yml/badge.svg)](https://github.com/pitcany/ykp/actions/workflows/python-ci.yml)
+
 ykp is an algorithmic trading assistant package providing tools for data loading, indicator calculation,
 strategy development, backtesting, execution handling, and performance metrics.
 
