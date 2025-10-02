@@ -13,6 +13,12 @@ Install required dependencies (including core data and ML groups):
 poetry install --with data,ml
 ```
 
+For development (linting, testing), include the dev group:
+
+```bash
+poetry install --with data,ml,dev
+```
+
 ## Quickstart
 
 ```python
