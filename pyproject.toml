@@ -21,7 +21,7 @@ numpy = "^1.25"
 pandas = "^2.1"
 scipy = "^1.11"
 
-# OpenAI
+# Julia
 
 [tool.poetry.group.julia]
 optional = true
@@ -29,13 +29,13 @@ optional = true
 [tool.poetry.group.julia.dependencies]
 julia = "^0.6.2"
 
-# OpenAI
+# # OpenAI
 
-[tool.poetry.group.openai]
-optional = true
+# [tool.poetry.group.openai]
+# optional = true
 
-[tool.poetry.group.openai.dependencies]
-openai = "^1.109.1"
+# [tool.poetry.group.openai.dependencies]
+# openai = "^1.109.1"
 
 # Optimization dependencies
 [tool.poetry.group.optimization]
