@@ -169,6 +169,56 @@ poetry add 'autogluon.tabular[all]' --group autogluon
 ```
 
 # R / Stan Integration
+## Broker Integrations
+
+This framework provides ready-to-use `ExecutionHandler` subclasses for live trading through Robinhood and TD Ameritrade.
+
+### Robinhood
+
+Use the unofficial [`robin_stocks`](https://github.com/jmfernandes/robin_stocks) library:
+```bash
+poetry add robin_stocks
+```
+Set your Robinhood credentials in environment variables:
+```bash
+export ROBINHOOD_USER=<your_username>
+export ROBINHOOD_PASS=<your_password>
+```
+Then instantiate and send orders:
+```python
+from quanttools.brokers.robinhood import RobinhoodExecutionHandler
+
+handler = RobinhoodExecutionHandler()
+# Buy one share
+handler.send_order("AAPL", 1)
+# Sell one share
+handler.send_order("AAPL", -1)
+```
+
+### TD Ameritrade
+
+First install the official TD Ameritrade API wrapper:
+```bash
+poetry add tda-api
+```
+Register a developer application to obtain an API key and configure OAuth:
+```bash
+export TDA_API_KEY=<your_api_key>
+export TDA_REDIRECT_URI=<your_redirect_uri>
+export TDA_ACCOUNT_ID=<your_account_id>
+```
+Perform the OAuth handshake once (it creates `tda_token.json`), then use:
+```python
+from quanttools.brokers.tdameritrade import TDAExecutionHandler
+
+handler = TDAExecutionHandler()
+# Buy one share
+handler.send_order("AAPL", 1)
+# Sell one share
+handler.send_order("AAPL", -1)
+```
+
+# R / Stan Integration
 
 This project includes a simple Bayesian time-series example using **cmdstanr** and Stan.
 Stan model files are stored under `models/bayes/`. You can fit a toy AR(1) model in R as follows:
