@@ -84,6 +84,16 @@ prophet = { version = "^1.2", markers = "python_version < '3.11'" }
 darts = "^0.25"
 tsfresh = { version = "^0.19", markers = "python_version < '3.11'" }
 
+# Fundamental analysis dependencies
+
+[tool.poetry.group.fundamental]
+optional = true
+
+[tool.poetry.group.fundamental.dependencies]
+yfinance = "^0.2"
+pandas-datareader = "^0.10"
+openpyxl = "^3.0"
+
 # Statistical dependencies
 
 [tool.poetry.group.statistics]

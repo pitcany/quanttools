@@ -201,11 +201,12 @@ quanttools/
 ├── data/ # Raw + processed datasets (never commit large raw data)
 │ ├── raw/
 │ └── processed/
-├── models/ # ML, Bayesian, and optimization models
-│ ├── bayes/ # Stan models (.stan)
-│ ├── dl/ # Deep learning (PyTorch/TensorFlow)
-│ ├── trees/ # XGBoost, LightGBM, CatBoost
-│ └── optim/ # Gurobi, CVXPY, scheduling
+├── models/ # ML, Bayesian, optimization, and fundamental-analysis models
+│ ├── bayes/       # Stan models (.stan)
+│ ├── dl/          # Deep learning (PyTorch/TensorFlow)
+│ ├── trees/       # XGBoost, LightGBM, CatBoost
+│ ├── fundamental/ # Fundamental-analysis pipelines (e.g., earnings, ratios)
+│ └── optim/       # Gurobi, CVXPY, scheduling
 ├── src/ # Core source code
 │ ├── python/ # Python modules
 │ ├── r/ # R scripts
@@ -233,6 +234,7 @@ quanttools/
 - **core**: always installed → numpy, pandas, scipy, scikit-learn, matplotlib, seaborn, jupyterlab, notebook, ipykernel.  
 - **dl**: deep learning frameworks → torch/vision/audio, flax, optax, tensorflow, jax.  
 - **trees**: gradient boosting frameworks → xgboost, lightgbm, catboost.  
+- **fundamental**: fundamental-analysis → yfinance, pandas-datareader, openpyxl.  
 - **bayes**: Bayesian inference → pymc, numpyro, cmdstanpy, arviz.  
 - **nlp**: NLP stack → transformers, datasets, tokenizers, spacy, sentencepiece.  
 - **cv**: computer vision → timm, opencv-python, (optionally detectron2/mmcv/mmdet).  
