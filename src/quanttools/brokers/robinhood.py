@@ -15,12 +15,12 @@ class RobinhoodExecutionHandler(ExecutionHandler):
         :param username: Robinhood username or env var ROBINHOOD_USER
         :param password: Robinhood password or env var ROBINHOOD_PASS
         """
-        import robin_stocks as r
-
         username = username or os.getenv("ROBINHOOD_USER")
         password = password or os.getenv("ROBINHOOD_PASS")
         if not username or not password:
             raise RuntimeError("ROBINHOOD_USER/ROBINHOOD_PASS must be set")
+        import robin_stocks as r
+
         self._robin = r
         self._robin.login(username, password)
 

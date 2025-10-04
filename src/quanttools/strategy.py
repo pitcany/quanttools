@@ -225,6 +225,37 @@ class ROCStrategy(Strategy):
         return signals
 
 
+class MeanReversionStrategy(Strategy):
+    """
+    Mean Reversion strategy.
+    Buys when price falls below a threshold percentage below the moving average,
+    and sells when price rises above a threshold percentage above the moving average.
+    """
+    def __init__(self, window: int, threshold: float = 0.0):
+        if window < 1:
+            raise ValueError("Window size must be positive")
+        if threshold < 0:
+            raise ValueError("threshold must be non-negative")
+        self.window = window
+        self.threshold = threshold
+
+    def generate_signals(self, prices: List[float]) -> List[int]:
+        from .indicators import simple_moving_average
+
+        ma = simple_moving_average(prices, self.window)
+        signals: List[int] = []
+        for price, m in zip(prices, ma):
+            if m is None:
+                signals.append(0)
+            elif price > m * (1.0 + self.threshold):
+                signals.append(-1)
+            elif price < m * (1.0 - self.threshold):
+                signals.append(1)
+            else:
+                signals.append(0)
+        return signals
+
+
 class OptionBuyAndHoldStrategy(Strategy):
     """
     Simple strategy to buy an option at the first opportunity and hold until expiration.

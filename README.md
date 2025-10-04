@@ -41,6 +41,7 @@ from quanttools.strategy import (
     MACDStrategy,
     MomentumStrategy,
     ROCStrategy,
+    MeanReversionStrategy,
 )
 
 # Sample price series
@@ -63,6 +64,7 @@ ema_strat = ExponentialMovingAverageCrossStrategy(short_window=2, long_window=4)
 macd_strat = MACDStrategy(fast_window=12, slow_window=26, signal_window=9)
 mom_strat = MomentumStrategy(window=3, threshold=0.0)
 roc_strat = ROCStrategy(window=3, threshold=0.0)
+mr_strat = MeanReversionStrategy(window=3, threshold=0.0)
 
 signals_mac = mac.generate_signals(prices)
 signals_rsi = rsi_strat.generate_signals(prices)
@@ -71,6 +73,7 @@ signals_ema = ema_strat.generate_signals(prices)
 signals_macd = macd_strat.generate_signals(prices)
 signals_mom = mom_strat.generate_signals(prices)
 signals_roc = roc_strat.generate_signals(prices)
+signals_mr = mr_strat.generate_signals(prices)
 
 # Backtesting example
 backtester = Backtester(mac, initial_cash=10000)

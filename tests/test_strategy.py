@@ -8,6 +8,7 @@ from quanttools.strategy import (
     MACDStrategy,
     MomentumStrategy,
     ROCStrategy,
+    MeanReversionStrategy,
 )
 
 
@@ -97,3 +98,24 @@ def test_roc_strategy_basic():
 def test_roc_strategy_invalid():
     with pytest.raises(ValueError):
         ROCStrategy(0, 1)
+
+def test_mean_reversion_strategy_basic():
+    strat = MeanReversionStrategy(window=2, threshold=0.0)
+    prices = [1, 2, 3, 2, 1]
+    # simple moving average: [None, 1.5, 2.5, 2.5, 1.5]
+    signals = strat.generate_signals(prices)
+    assert signals == [0, -1, -1, 1, 1]
+
+def test_mean_reversion_strategy_threshold():
+    strat = MeanReversionStrategy(window=2, threshold=1.0)
+    prices = [1, 2, 3, 2, 1]
+    # sma: [None, 1.5, 2.5, 2.5, 1.5]
+    # thresholds: upper=mean*(1+1.0)=2*mean, lower=mean*(1-1.0)=0
+    signals = strat.generate_signals(prices)
+    assert signals == [0, 0, 0, 0, 0]
+
+def test_mean_reversion_strategy_invalid_params():
+    with pytest.raises(ValueError):
+        MeanReversionStrategy(0, 0.1)
+    with pytest.raises(ValueError):
+        MeanReversionStrategy(2, -0.1)

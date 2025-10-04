@@ -20,12 +20,12 @@ class TDAExecutionHandler(ExecutionHandler):
         :param redirect_uri: OAuth redirect URI or env var TDA_REDIRECT_URI
         :param token_path: File path for storing OAuth token
         """
-        from tda import auth
-
         api_key = api_key or os.getenv("TDA_API_KEY")
         redirect_uri = redirect_uri or os.getenv("TDA_REDIRECT_URI")
         if not api_key or not redirect_uri:
             raise RuntimeError("TDA_API_KEY/TDA_REDIRECT_URI must be set")
+        from tda import auth
+
         self._client = auth.client_from_token_file(token_path, api_key, redirect_uri)
 
     def send_order(self, symbol: str, quantity: int, order_type: str = "market") -> None:
